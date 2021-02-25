@@ -1,9 +1,46 @@
-// 🐨 you'll need to import React and ReactDOM up here
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Dialog from '@reach/dialog'
+import '@reach/dialog/styles.css'
 
-// 🐨 you'll also need to import the Logo component from './components/logo'
+import {Logo} from './components/logo'
+import LoginForm from './components/LoginForm'
 
-// 🐨 create an App component here and render the logo, the title ("Bookshelf"), a login button, and a register button.
-// 🐨 for fun, you can add event handlers for both buttons to alert that the button was clicked
+function App() {
+  const [openModal, setOpenModal] = React.useState('none')
 
-// 🐨 use ReactDOM to render the <App /> to the root element
-// 💰 find the root element with: document.getElementById('root')
+  function handleClick(mode) {
+    setOpenModal(mode)
+  }
+
+  function handleClose() {
+    setOpenModal('none')
+  }
+
+  return (
+    <div>
+      <Logo />
+      <h1>Bookshelf</h1>
+      <div>
+        <button onClick={() => handleClick('login')}>login</button>
+      </div>
+      <div>
+        <button onClick={() => handleClick('register')}>register</button>
+      </div>
+      <Dialog aria-label="Login form" isOpen={openModal === 'login'}>
+        <button onClick={handleClose} className="close-button">
+          <span arial-hidden>close</span>
+        </button>
+        <LoginForm title="login" />
+      </Dialog>
+      <Dialog aria-label="Login form" isOpen={openModal === 'register'}>
+        <button onClick={handleClose} className="close-button">
+          <span arial-hidden>close</span>
+        </button>
+        <LoginForm title="register" />
+      </Dialog>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
