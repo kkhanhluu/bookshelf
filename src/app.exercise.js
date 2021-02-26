@@ -1,30 +1,64 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
 import * as React from 'react'
-// 🐨 you're going to need this:
-// import * as auth from 'auth-provider'
+
+import * as auth from 'auth-provider'
 import {AuthenticatedApp} from './authenticated-app'
 import {UnauthenticatedApp} from './unauthenticated-app'
+import {client} from 'utils/api-client'
+import {useAsync} from 'utils/hooks'
+import * as colors from 'styles/colors'
+import {FullPageSpinner} from 'components/lib'
+
+async function getUser() {
+  let user = null
+  const token = await auth.getToken()
+  if (token) {
+    user = await client('me', {token})
+  }
+  return user.user
+}
 
 function App() {
-  // 🐨 useState for the user
+  const {
+    data: user,
+    error,
+    isIdle,
+    isLoading,
+    isSuccess,
+    isError,
+    run,
+    setData: setUser,
+  } = useAsync()
 
-  // 🐨 create a login function that calls auth.login then sets the user
-  // 💰 const login = form => auth.login(form).then(u => setUser(u))
-  // 🐨 create a registration function that does the same as login except for register
+  React.useEffect(() => {
+    run(getUser())
+  }, [run])
 
-  // 🐨 create a logout function that calls auth.logout() and sets the user to null
+  const login = form => auth.login(form).then(u => setUser(u))
+  const register = form => auth.register(form).then(u => setUser(u))
+  const logout = () => auth.logout().then(() => setUser(null))
 
-  // 🐨 if there's a user, then render the AuthenticatedApp with the user and logout
-  // 🐨 if there's not a user, then render the UnauthenticatedApp with login and register
+  if (isLoading || isIdle) {
+    return <FullPageSpinner />
+  }
 
-  return <UnauthenticatedApp />
+  if (isError) {
+    return (
+      <div>
+        <p>Uh oh... There's a problem. Try refereshing the app</p>
+        <pre>{error.message}</pre>
+      </div>
+    )
+  }
+
+  if (isSuccess) {
+    return user ? (
+      <AuthenticatedApp user={user} logout={logout} />
+    ) : (
+      <UnauthenticatedApp register={register} login={login} />
+    )
+  }
 }
 
 export {App}
-
-/*
-eslint
-  no-unused-vars: "off",
-*/
