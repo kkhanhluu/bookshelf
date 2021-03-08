@@ -4,7 +4,7 @@ import {jsx} from '@emotion/core'
 import * as React from 'react'
 import * as auth from 'auth-provider'
 import {BrowserRouter as Router} from 'react-router-dom'
-// 🐨 you'll need the queryCache from react-query
+import {useQueryClient} from 'react-query'
 import {FullPageSpinner} from './components/lib'
 import * as colors from './styles/colors'
 import {client} from './utils/api-client'
@@ -36,6 +36,8 @@ function App() {
     setData,
   } = useAsync()
 
+  const queryClient = useQueryClient()
+
   React.useEffect(() => {
     run(getUser())
   }, [run])
@@ -44,6 +46,7 @@ function App() {
   const register = form => auth.register(form).then(user => setData(user))
   const logout = () => {
     auth.logout()
+    queryClient.clear()
     // 🐨 clear the query cache with queryCache.clear()
     setData(null)
   }
