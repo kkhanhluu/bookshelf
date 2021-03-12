@@ -13,10 +13,14 @@ function DiscoverBooksScreen({user}) {
   const [query, setQuery] = React.useState('')
   const [queried, setQueried] = React.useState(false)
 
-  const {books, isLoading, isError, isSuccess, error} = useBookSearch(
+  const {books, isLoading, isError, isSuccess, error, refetch} = useBookSearch(
     query,
     user,
   )
+
+  React.useEffect(() => {
+    return refetch
+  }, [])
 
   function handleSearchSubmit(event) {
     event.preventDefault()

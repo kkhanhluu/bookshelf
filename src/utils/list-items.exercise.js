@@ -18,15 +18,28 @@ const defaultMutationOptions = queryClient => {
     onSettled: () => {
       queryClient.invalidateQueries('list-items')
     },
+    onMutate: data => {
+      const previousItem = queryClient.getQueryData('list-items')
+      queryClient.setQueryData(
+        'list-items',
+        previousItem.map(item =>
+          item.id === data.id ? {...item, ...data} : item,
+        ),
+      )
+      return previousItem
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData('list-items', context)
+    },
   }
 }
 
-export function useUpdateListItem(user) {
+export function useUpdateListItem(user, options = {}) {
   const queryClient = useQueryClient()
   return useMutation(
     data =>
       client(`list-items/${data.id}`, {method: 'PUT', data, token: user.token}),
-    defaultMutationOptions(queryClient),
+    {...defaultMutationOptions(queryClient), ...options},
   )
 }
 

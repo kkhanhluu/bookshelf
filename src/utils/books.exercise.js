@@ -1,4 +1,4 @@
-import {useQuery, useMutation, useQueryClient} from 'react-query'
+import {useQuery, useQueryClient} from 'react-query'
 import bookPlaceholderSvg from 'assets/book-placeholder.svg'
 import {client} from 'utils/api-client'
 
@@ -26,11 +26,20 @@ export function useBook(bookId, user) {
 }
 
 export function useBookSearch(query, user) {
-  const result = useQuery(['bookSearch', query], () =>
-    client(`books?query=${encodeURIComponent(query)}`, {
-      token: user.token,
-      method: 'GET',
-    }).then(data => data.books),
+  const queryClient = useQueryClient(); 
+
+  const result = useQuery(
+    ['bookSearch', query],
+    () =>
+      client(`books?query=${encodeURIComponent(query)}`, {
+        token: user.token,
+        method: 'GET',
+      }).then(data => data.books),
+    {
+      onSuccess: books => {
+        books.forEach(book => queryClient.setQueryData(['book', book.id], book))
+      },
+    },
   )
 
   return {...result, books: result.data ?? loadingBooks}

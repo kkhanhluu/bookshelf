@@ -3,6 +3,7 @@ import {jsx} from '@emotion/core'
 import * as React from 'react'
 import {FaStar} from 'react-icons/fa'
 import * as colors from 'styles/colors'
+import {ErrorMessage} from 'components/lib'
 import {useUpdateListItem} from 'utils/list-items'
 
 const visuallyHiddenCSS = {
@@ -19,8 +20,8 @@ const visuallyHiddenCSS = {
 function Rating({listItem, user}) {
   const [isTabbing, setIsTabbing] = React.useState(false)
 
-  const updateItem = useUpdateListItem(user)
-  const update = data => updateItem.mutateAsync(data)
+  const {mutateAsync, isError, error} = useUpdateListItem(user)
+  const update = data => mutateAsync(data)
 
   React.useEffect(() => {
     function handleKeyDown(event) {
@@ -80,6 +81,13 @@ function Rating({listItem, user}) {
           </span>
           <FaStar css={{width: '16px', margin: '0 2px'}} />
         </label>
+        {isError ? (
+          <ErrorMessage
+            error={error}
+            variant="inline"
+            css={{marginLeft: 6, fontSize: '0.7em'}}
+          />
+        ) : null}
       </React.Fragment>
     )
   })
