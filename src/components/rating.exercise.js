@@ -1,13 +1,9 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
 import * as React from 'react'
-import {useMutation, useClient, useQueryClient} from 'react-query'
-import {client} from 'utils/api-client'
-// 🐨 you'll need useMutation and queryCache from react-query
-// 🐨 you'll also need the client from utils/api-client
 import {FaStar} from 'react-icons/fa'
 import * as colors from 'styles/colors'
+import {useUpdateListItem} from 'utils/list-items'
 
 const visuallyHiddenCSS = {
   border: '0',
@@ -23,22 +19,7 @@ const visuallyHiddenCSS = {
 function Rating({listItem, user}) {
   const [isTabbing, setIsTabbing] = React.useState(false)
 
-  const queryClient = useQueryClient()
-  const updateItem = useMutation(
-    data =>
-      client(`list-items/${listItem.id}`, {
-        method: 'PUT',
-        data,
-        token: user.token,
-      }),
-    {onSettled: () => queryClient.invalidateQueries('list-items')},
-  )
-  // 🐨 call useMutation here and call the function "update"
-  // the mutate function should call the list-items/:listItemId endpoint with a PUT
-  //   and the updates as data. The mutate function will be called with the updates
-  //   you can pass as data.
-  // 💰 if you want to get the list-items cache updated after this query finishes
-  // the use the `onSettled` config option to queryCache.invalidateQueries('list-items')
+  const updateItem = useUpdateListItem(user)
   const update = data => updateItem.mutateAsync(data)
 
   React.useEffect(() => {
@@ -72,10 +53,6 @@ function Rating({listItem, user}) {
             {
               [`.${rootClassName} &:checked ~ label`]: {color: colors.gray20},
               [`.${rootClassName} &:checked + label`]: {color: 'orange'},
-              // !important is here because we're doing special non-css-in-js things
-              // and so we have to deal with specificity and cascade. But, I promise
-              // this is better than trying to make this work with JavaScript.
-              // So deal with it 😎
               [`.${rootClassName} &:hover ~ label`]: {
                 color: `${colors.gray20} !important`,
               },
