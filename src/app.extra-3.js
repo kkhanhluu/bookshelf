@@ -8,5 +8,4 @@ function App() {
   return user ? <AuthenticatedApp /> : <UnauthenticatedApp />
 }
 
-// 💯 colocate global providers
-// export * from './app.extra-3'
+export {App}

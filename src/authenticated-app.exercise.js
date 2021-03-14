@@ -1,8 +1,17 @@
-// export * from './authenticated-app.final'
+/** @jsx jsx */
+import {jsx} from '@emotion/core'
+import {useAuth} from 'context/auth-context'
+import {ErrorBoundary} from 'react-error-boundary'
+import {Link as RouterLink, Route, Routes, useMatch} from 'react-router-dom'
+import {Button, ErrorMessage, FullPageErrorFallback} from './components/lib'
+import {BookScreen} from './screens/book'
+import {DiscoverBooksScreen} from './screens/discover'
+import {FinishedScreen} from './screens/finished'
+import {NotFoundScreen} from './screens/not-found'
+import {ReadingListScreen} from './screens/reading-list'
+import * as colors from './styles/colors'
+import * as mq from './styles/media-queries'
 
-export * from './authenticated-app.exercise'
-
-<<<<<<< HEAD
 function ErrorFallback({error}) {
   return (
     <ErrorMessage
@@ -100,7 +109,7 @@ function NavLink(props) {
   )
 }
 
-function Nav(params) {
+function Nav() {
   return (
     <nav
       css={{
@@ -148,7 +157,3 @@ function AppRoutes() {
 }
 
 export {AuthenticatedApp}
-=======
-// 💯 create a `useAuth` hook
-// export * from './authenticated-app.extra-1'
->>>>>>> main

@@ -1,4 +1,5 @@
-// export * from './book.final'
+/** @jsx jsx */
+import {jsx} from '@emotion/core'
 
 import * as React from 'react'
 import debounceFn from 'debounce-fn'
@@ -6,8 +7,8 @@ import {FaRegCalendarAlt} from 'react-icons/fa'
 import Tooltip from '@reach/tooltip'
 import {useParams} from 'react-router-dom'
 import {useBook} from 'utils/books'
-import {formatDate} from 'utils/misc'
 import {useListItem, useUpdateListItem} from 'utils/list-items'
+import {formatDate} from 'utils/misc'
 import * as mq from 'styles/media-queries'
 import * as colors from 'styles/colors'
 import {Spinner, Textarea, ErrorMessage} from 'components/lib'
@@ -63,7 +64,7 @@ function BookScreen() {
               {book.loadingBook ? null : <StatusButtons book={book} />}
             </div>
           </div>
-          <div css={{marginTop: 10, minHeight: 46}}>
+          <div css={{marginTop: 10, height: 46}}>
             {listItem?.finishDate ? <Rating listItem={listItem} /> : null}
             {listItem ? <ListItemTimeframe listItem={listItem} /> : null}
           </div>
@@ -98,7 +99,6 @@ function ListItemTimeframe({listItem}) {
 
 function NotesTextarea({listItem}) {
   const [mutate, {error, isError, isLoading}] = useUpdateListItem()
-
   const debouncedMutate = React.useMemo(() => debounceFn(mutate, {wait: 300}), [
     mutate,
   ])
@@ -124,9 +124,9 @@ function NotesTextarea({listItem}) {
         </label>
         {isError ? (
           <ErrorMessage
-            variant="inline"
             error={error}
-            css={{fontSize: '0.7em'}}
+            variant="inline"
+            css={{marginLeft: 6, fontSize: '0.7em'}}
           />
         ) : null}
         {isLoading ? <Spinner /> : null}

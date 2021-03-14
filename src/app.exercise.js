@@ -1,5 +1,6 @@
-import * as React from 'react'
-import {useAuth} from './context/auth-context'
+/** @jsx jsx */
+import {jsx} from '@emotion/core'
+import {useAuth} from 'context/auth-context'
 import {AuthenticatedApp} from './authenticated-app'
 import {UnauthenticatedApp} from './unauthenticated-app'
 
@@ -8,5 +9,4 @@ function App() {
   return user ? <AuthenticatedApp /> : <UnauthenticatedApp />
 }
 
-// 💯 colocate global providers
-// export * from './app.extra-3'
+export {App}
