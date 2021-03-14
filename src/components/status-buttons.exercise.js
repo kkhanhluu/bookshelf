@@ -52,13 +52,11 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
   )
 }
 
-// 💣 remove user from the props
-function StatusButtons({user, book}) {
-  // 💣 remove the user from all these function calls
-  const listItem = useListItem(book.id, user)
-  const [update] = useUpdateListItem(user, {throwOnError: true})
-  const [remove] = useRemoveListItem(user, {throwOnError: true})
-  const [create] = useCreateListItem(user, {throwOnError: true})
+function StatusButtons({book}) {
+  const listItem = useListItem(book.id)
+  const {mutateAsync: update} = useUpdateListItem()
+  const {mutateAsync: remove} = useRemoveListItem()
+  const {mutateAsync: create} = useCreateListItem()
 
   return (
     <React.Fragment>
